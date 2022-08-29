@@ -1,0 +1,31 @@
+name: app-test-build-deploy
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  git_vm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - run: |
+          pwd
+          echo this is a test
+          curl icanhazip.com
+    name: Run commands in git_vm
+  containter:
+    runs-on: ubuntu-latest
+    container: python:3.10.6-buster
+    steps:
+      - uses: actions/checkout@v3
+
+      - run: |
+          apt-get update && apt-get install make git -y
+          pip3 install -r src/requirements.txt
+          pwd
+          ls -lash
+          make test
+    name: Run commands in container
+
