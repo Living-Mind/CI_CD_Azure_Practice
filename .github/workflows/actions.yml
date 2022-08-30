@@ -8,18 +8,22 @@ jobs:
   git_vm:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+
+      - name: Run commands in git_vm
+        uses: actions/checkout@v3
 
       - run: |
           pwd
           echo this is a test
           curl icanhazip.com
-    name: Run commands in git_vm
+
   containter:
     runs-on: ubuntu-latest
     container: python:3.10.6-buster
     steps:
-      - uses: actions/checkout@v3
+
+      - name: Run commands in container (test-run)
+        uses: actions/checkout@v3
 
       - run: |
           apt-get update && apt-get install make git -y
@@ -27,5 +31,24 @@ jobs:
           pwd
           ls -lash
           make test
-    name: Run commands in container (test-run)
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Dockerhub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          file: ./build/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_APP }}:1.0.0
+
 
