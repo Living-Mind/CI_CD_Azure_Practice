@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Run commands in git_vm + app-test
+      - name: Checkout
         uses: actions/checkout@v3
 
       - name: Set up Python version
@@ -25,7 +25,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r src/requirements.txt
 
-      - run: |
+      - name: Run test + commands ot git runner
+        run: |
+          make test
           pwd
           echo this is a test
           curl icanhazip.com
