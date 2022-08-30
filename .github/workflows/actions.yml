@@ -9,28 +9,43 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Run commands in git_vm
+      - name: Run commands in git_vm + app-test
         uses: actions/checkout@v3
+
+      - name: Set up Python version
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ secrets.PYTHON_VERSION }}
+
+      - name: Create and start virtual environment
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+
+      - name: Install dependencies
+        run: pip install -r src/requirements.txt
 
       - run: |
           pwd
           echo this is a test
           curl icanhazip.com
 
-  containter:
-    runs-on: ubuntu-latest
-    container: python:3.10.6-buster
-    steps:
+          #Testing without container
+          #
+          # containter:
+          #   runs-on: ubuntu-latest
+          #   container: python:3.10.6-buster
+          #   steps:
 
-      - name: Run commands in container (test-run)
-        uses: actions/checkout@v3
+          #     - name: Run commands in container (test-run)
+          #       uses: actions/checkout@v3
 
-      - run: |
-          apt-get update && apt-get install make git -y
-          pip3 install -r src/requirements.txt
-          pwd
-          ls -lash
-          make test
+          #     - run: |
+          #         apt-get update && apt-get install make git -y
+          #         pip3 install -r src/requirements.txt
+          #         pwd
+          #         ls -lash
+          #         make test
 
   docker:
     runs-on: ubuntu-latest
@@ -50,5 +65,3 @@ jobs:
           file: ./build/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_APP }}:1.0.0
-
-
