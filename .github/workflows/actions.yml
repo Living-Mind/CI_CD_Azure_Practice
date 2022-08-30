@@ -27,5 +27,5 @@ jobs:
           pwd
           ls -lash
           make test
-    name: Run commands in container
+    name: Run commands in container (test-run)
 
